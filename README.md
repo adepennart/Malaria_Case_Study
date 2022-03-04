@@ -60,7 +60,6 @@ mv genemark.gtf Haemoproteus.gtf
 ```
 
 ## Blast
-
 ```bash=
 #make directory
 cd ..
@@ -76,7 +75,8 @@ cat Haemoproteus.gtf |sed -e 's/  length=.*\tGeneMark.hmm/\tGeneMark.hmm/' > Hae
 gffParse.pl -c -p -F -i Haemoproteus_tartakovskyi_clean.genome -g Haemoproteus_2.gtf 
 
 #install blast
-conda install blastp=2.12.0+
+conda install bioconda blast=2.12.0+
+
 #blast
  blastp -query gffParse.faa -db SwissProt -evalue 1e-10 -out Ht.blastp -num_threads 16
 ```
