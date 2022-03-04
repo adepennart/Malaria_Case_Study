@@ -42,7 +42,11 @@ mv genemark.gtf Plasmodium_yoelii.gtf
 cp plasmodium_yoelii.gtf /tmp/Prediction/
 ```
 ## Genome Filtration
-Haemoproteus_tartakovskyi is a parasite and the genome file is heavily contaminated with the hosts DNA, therefore a filtration in in order. The genome will be filtered
+Haemoproteus_tartakovskyi is a parasite and the genome file is heavily contaminated with the hosts DNA, bird DNA, therefore a filtration in in order. The genome will be filtered by minimum genome size and maximum GC content:
+
+* minimum genome size = 3000
+* maximum GC content = 30%
+
 ```bash
 #Make directory
 cd ..
@@ -59,6 +63,9 @@ python cleaning.py Haemoproteus_tartakovskyi.genome Haemoproteus_tartakovskyi_cl
 ```
 
 ## Second Gene Prediction
+We have completed a first filtration, but not all bird scaffolds will have been removed. In order to remove further bird scaffolds, a blast for bird genes amongst the scaffolds will be conducted.
+
+In order to blast, we must run the genome through a  gene prediction.
 
 ```bash=
 #make directory
@@ -76,6 +83,10 @@ mv genemark.gtf Haemoproteus.gtf
 ```
 
 ## Blast
+Now that our gene prediciton is complete, genes can be blasted. 
+
+The blast software takes fasta files as queries, so the .gtf file will be reformated to a fasta file.
+
 ```bash=
 #make directory
 cd ..
@@ -94,10 +105,16 @@ gffParse.pl -c -p -F -i Haemoproteus_tartakovskyi_clean.genome -g Haemoproteus_2
 conda install bioconda blast=2.12.0+
 
 #blast
+#The database used will be SwissProt with a minimum evalue of 1e-10 
+#protein blast will be conducted so .faa file query and protein database will be used 
  blastp -query gffParse.faa -db SwissProt -evalue 1e-10 -out Ht.blastp -num_threads 16
 ```
 
 ## Bird Scaffolds Removal
+Now that the blast is complete, the best matches to bird genes will be removed from the scaffolds.
+The taxonomy.dat and uniprot_sprot.dat databases will be used to find species that are birds, taxa aves, and the corresponding uniprot species code, respectively.
+This will identify, in the blast file, which uses uniprot species codes, which are birds.
+
 ```bash=
 #make directory
 cd ..
@@ -118,6 +135,7 @@ python taxParser.py Ht.blastp taxonomy.dat uniprot_sprot.dat gffParse.fna Haemop
 
 ```
 ## Third Gene Prediction 
+Now that the bird scaffolds are removed a new gene prediction will need to be conducted to only pull out genes from Haemoproteus_tartakovskyi.
 ```bash=
 #make directory
 cd ..
@@ -135,6 +153,7 @@ mv genemark.gtf Haemoproteus.gtf
 ```
 
 ## Fasta Parse
+To determine orthologous genes and BUSCOs, the softwares require fasta files. Our .gtf files will be converted to fasta files.
 ```bash=
 #make directory
 cd ..
@@ -162,7 +181,7 @@ for file in *.gtf; do genus=$(echo $file | cut -c 1); species=$(echo $file | cut
 
 ```
 ## Ortholog Identification
-
+We can determine orthologous genes with the proteinortho software.
 ```bash=
 #make directory
 cd ..
@@ -183,7 +202,7 @@ nohup proteinortho6.pl {Ht,Pb,Pc,Pf,Pk,Pv,Py,Tg}.faa
 ```
 
 ## BUSCOs
-
+Here we are determine busco genes for each species.
 ```bash=
 #make directory
 cd ..
@@ -202,9 +221,8 @@ for file in *.faa; do busco -i $file -o ${file%.faa} -m prot -l apicomplexa -f; 
 
 ```
 
-
-
 ##  Busco Ortholog Parse
+To determine which species are more related, we need the orthologues for each species for each BUSCO gene that is found in all 8 species.
 
 ```bash=
 #for getting all the busco orthologs for each species
@@ -217,7 +235,7 @@ python buscoparser.py busco_list.txt
 
 
 ## Alignment
-
+An alignment and subsequent trees will be conducted with a clustal software and raxml.
 ```bash=
 #make directory
 cd ..
@@ -245,7 +263,7 @@ mkdir raxmlHPC_output
 ```
 
 ## Tree Build
-
+The tree can finally be built to determine which species are most closely related.
 ```bash=
 #make directory
 cd ..
