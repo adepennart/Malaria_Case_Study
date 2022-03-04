@@ -1,6 +1,7 @@
 # Malaria Case Study
 ## Initialization
 make sure conda installed
+conda=
 ```bash=1
 #login to server
 ssh inf-49-2021@130.235.8.214
@@ -61,15 +62,21 @@ mv genemark.gtf Haemoproteus.gtf
 ## Blast
 
 ```bash=
-#blasting
+#make directory
 cd ..
 mkdir 4_blast/
 cd 4_blast/
+
+#copy file from last directory
 cp 3_gene_prediction/Haemoproteus.gtf .
+
 #re format file for gffParse
 cat Haemoproteus.gtf |sed -e 's/  length=.*\tGeneMark.hmm/\tGeneMark.hmm/' > Haemoproteus_2.gtf
 #change from gtf to fasta
 gffParse.pl -c -p -F -i Haemoproteus_tartakovskyi_clean.genome -g Haemoproteus_2.gtf 
+
+#install blast
+conda install blastp=2.12.0+
 #blast
  blastp -query gffParse.faa -db SwissProt -evalue 1e-10 -out Ht.blastp -num_threads 16
 ```
@@ -150,64 +157,10 @@ cp 7_make_fasta/*.faa 9_buscls/
 for file in *.faa; do busco -i $file -o ${file%.faa} -m prot -l apicomplexa -f; done
 
 ```
-# Versions
-
-## questions 7
-
-```bash=
-for file in *.faa; do count=$(cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv | grep -v '#'| grep -v "Missing"| grep -v "Fragmented" | cut -f 1 | sort -u | wc -l); echo ${file%.faa} $count ;done
-# Ht 326
-# Pb 372
-# Pc 429
-# Pf 436
-# Pk 323
-# Pv 437
-# Py 434
-# Tg 384
-
-#no to see what percent are complete/ duplicate
-for file in *.faa; do count=$(echo $(cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv |grep -v "#" | grep -v "Missing"| grep -v "Fragmented" | cut -f 1 | sort -u | wc -l)/ $(cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv | grep -v '#' |  cut -f 1 | sort -u | wc -l)|bc -l); echo ${file%.faa} $count ;done
-# Ht .73094170403587443946
-# Pb .83408071748878923766
-# Pc .96188340807174887892
-# Pf .97757847533632286995
-# Pk .72421524663677130044
-# Pv .97982062780269058295
-# Py .97309417040358744394
-# Tg .86098654708520179372
-```
-
-question 8 has no code requirement
-## questions 9
-
-```bash=
-#make one concatonated file
-for file in *.faa; do cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv | grep -v "#" | grep -v "Missing"| grep -v "Fragmented" | cut -f 1 | sort -u  >>concat_full_table.tsv ;done
-
-#find BUSCO genes found in all 8
-cat concat_full_table.tsv | sort | uniq -c| cut -d " " -f 7 | grep 8 | wc -l
-# 185
-#now for 7 species
-#one contatonated file
-ls *.faa | grep -v Tg.faa | while read file; do cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv | grep -v "#" | grep -v "Missing"| grep -v "Fragmented" | cut -f 1 | sort -u  >>7org_full_table.tsv ;done
-
-```
-
-## questions 10
-
-```bash=
-#now for 7 species
-#one contatonated file
-ls *.faa | grep -v Tg.faa | while read file; do cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv | grep -v "#" | grep -v "Missing"| grep -v "Fragmented" | cut -f 1 | sort -u  >>7org_full_table.tsv ;done
-
-#find BUSCO found in all 7
-cat 7org_full_table.tsv | sort | uniq -c| cut -d " " -f 7 | grep 7 | wc -l
-204
-
-```
 
 
-## run buscoparser
+
+##  Busco Ortholog Parse
 
 ```bash=
 #for getting all the busco orthologs for each species
@@ -219,7 +172,7 @@ python buscoparser.py busco_list.txt
 ```
 
 
-## alignment
+## Alignment
 
 ```bash=
 #10_alignment
@@ -228,7 +181,7 @@ mkdir 10_alignment
 cd 10_alignment
 cp ../9_busco/Python_output/ .
 #conda install
-conda install -c bioconda clustalo raxml
+conda install -c bioconda clustalo=1.2.4 raxml=8.2.12
 #make alignment directory
 mkdir Alignment
 #output alignment to Aligment directory
@@ -240,14 +193,14 @@ mkdir raxmlHPC_output
 
 ```
 
-## tree
+## Tree Build
 
 ```bash=
 #11_tree
 cd ..
 mkdir 11_tree
 cd 11_tree
-conda install -c bioconda phylip
+conda install -c bioconda phylip=3.698
 #says it is already installed
 
 cp -r  ../10_alignment/raxmlHPC_output/ .
