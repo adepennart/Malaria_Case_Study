@@ -81,7 +81,7 @@ ln -s /resources/binp29/Data/malaria/taxonomy.dat uniprot_sprot.dat
 cp 4_blast/Ht.blastp
 cp 4_blast/gffParse.fna
 cp 2_clean_genome/Haemoproteus_tartakovskyi_clean.genome .
-python taxParser.py Ht.blastp taxonomy.dat uniprot_sprot.dat gffParse.fna Haemoproteus_tartakovskyi_clean.genome Haemoproteus_no_bird.fna
+python taxParser.py Ht.blastp taxonomy.dat uniprot_sprot.dat gffParse.fna Haemoproteus_tartakovskyi_clean.genome Haemoproteus_tartakovskyi.fna
 
 ```
 ## gene prediction redo
@@ -91,8 +91,7 @@ cd ..
 mkdir 6_gene_prediction/
 cd 6_gene_prediction/
 cp 5_taxonomy/Haemoproteus_no_bird.fna .
-nohup gmes_petap.pl --ES --sequence 6_gene_prediction/Haemoproteus_no_bird.fna & 
-
+nohup gmes_petap.pl --ES --sequence 6_gene_prediction/Haemoproteus_tartakovskyi.fna & 
 ```
 
 MISSING DATA
@@ -126,6 +125,9 @@ conda create -n malaria
 conda activate malaria
 conda install proteinortho=6.0.33
 nohup proteinortho6.pl {Ht,Pb,Pc,Pf,Pk,Pv,Py,Tg}.faa
+
+ (CHECK)cat myproject.proteinortho.tsv | cut -f 1 | grep -c 8
+ 158
 ```
 
 ## busco
@@ -242,7 +244,17 @@ mkdir 11_tree
 cd 11_tree
 conda install -c bioconda phylip
 #says it is already installed
+
+cp -r  ../10_alignment/raxmlHPC_output/ .
+
+rm raxmlHPC_output/RAxML_log.*
+rm raxmlHPC_output/RAxML_parsimonyTree.*
+rm raxmlHPC_output/RAxML_result.*
+ rm raxmlHPC_output/RAxML_info.*
+ls raxmlHPC_output/* | while read file; do cat $file >> intree ;done
+phylip consense intree 
 ```
+
 
 
 
