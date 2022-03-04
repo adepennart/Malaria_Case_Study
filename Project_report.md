@@ -45,7 +45,7 @@ for file in *.faa; do count=$(cat ${file%.faa}/run_apicomplexa_odb10/full_table.
 # Py 434
 # Tg 384
 ```
-We have the fewest busco genes in Pk(323) and the most in Pv(437). The complete number of busco genes is 446. I do not know the threshold for whether something is close to complete but 437/446 is pretty good and is 326/446 is not bad.
+We have the fewest BUSCO genes in Pk(323) and the most in Pv(437). The complete number of BUSCO genes is 446. I do not know the threshold for whether something is close to complete but 437/446 is pretty good and is 326/446 is not bad.
 ```
 #now to see what percent are complete/ duplicate
 for file in *.faa; do count=$(echo $(cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv |grep -v "#" | grep -v "Missing"| grep -v "Fragmented" | cut -f 1 | sort -u | wc -l)/ $(cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv | grep -v '#' |  cut -f 1 | sort -u | wc -l)|bc -l); echo ${file%.faa} $count ;done
@@ -58,7 +58,7 @@ for file in *.faa; do count=$(echo $(cat ${file%.faa}/run_apicomplexa_odb10/full
 # Py .97309417040358744394
 # Tg .86098654708520179372
 ```
-Here we see that percentage wise, the fewest busco genes were found in Pk(0.72) and the most Pv(0.98). Again, unsure of threshhold, but does not seem bad.
+Here we see that percentage wise, the fewest BUSCO genes were found in Pk(0.72) and the most Pv(0.98). Again, unsure of threshhold, but does not seem bad.
 
 
 ## 8. Do you think that the assembly of the Haemoproteus takowskyi genome is a reasonable approximation of the true genome?
