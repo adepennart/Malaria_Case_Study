@@ -1,3 +1,5 @@
+# Malaria Case Study
+## Initialization
 make sure conda installed
 ```bash=1
 #login to server
@@ -8,7 +10,8 @@ ssh inf-49-2021@130.235.8.214
 mkdir Malaria
 cd Malaria
 ```
-## gene prediction 1
+## First Gene Prediction
+GeneMark-ES/ET/EP ver 4.62_lic
 ```bash
 #start with gene prediction 
 mkdir 1_gene_predict/
@@ -26,7 +29,7 @@ mv genemark.gtf Plasmodium_yoelii.gtf
 #put file in shared folder
 cp plasmodium_yoelii.gtf /tmp/Prediction/
 ```
-## genome clean
+## Genome Filtration
 
 ```bash
 #genome clean
@@ -42,7 +45,8 @@ python cleaning.py Haemoproteus_tartakovskyi.genome Haemoproteus_tartakovskyi_cl
 
 ```
 
-## gene prediction 2
+## Second Gene prediction
+
 ```bash=
 #gene prediction again
 cd ..
@@ -54,7 +58,8 @@ nohup gmes_petap.pl --ES --sequence 3_gene_prediction/Haemoproteus_tartakovskyi_
 mv genemark.gtf Haemoproteus.gtf
 ```
 
-## blast
+## Blast
+
 ```bash=
 #blasting
 cd ..
@@ -69,7 +74,7 @@ gffParse.pl -c -p -F -i Haemoproteus_tartakovskyi_clean.genome -g Haemoproteus_2
  blastp -query gffParse.faa -db SwissProt -evalue 1e-10 -out Ht.blastp -num_threads 16
 ```
 
-## remove bird scaffolds
+## Bird Scaffolds Removal
 ```bash=
 #find bird scaffolds
 cd ..
@@ -84,7 +89,7 @@ cp 2_clean_genome/Haemoproteus_tartakovskyi_clean.genome .
 python taxParser.py Ht.blastp taxonomy.dat uniprot_sprot.dat gffParse.fna Haemoproteus_tartakovskyi_clean.genome Haemoproteus_tartakovskyi.fna
 
 ```
-## gene prediction redo
+## Third Gene Prediction 
 ```bash=
 #redo gene prediction
 cd ..
@@ -96,7 +101,7 @@ nohup gmes_petap.pl --ES --sequence 6_gene_prediction/Haemoproteus_tartakovskyi.
 
 MISSING DATA
 
-## modify to fasta
+## Fasta Parse
 ```bash=
 #make to fasta
 cd ..
@@ -115,7 +120,7 @@ mv Haemoproteus_tartakovskyi_2.gtf Haemoproteus_tartakovskyi.gtf
 for file in *.gtf; do genus=$(echo $file | cut -c 1); species=$(echo $file | cut -d '_' -f 2 | cut -c 1 );genome=$(echo ${file%.gtf}.genome);gffParse.pl -c -p -F -i ${genus^^}${genome:1} -g $file -b ${genus^^}$species;done
 
 ```
-## identify orthologs
+## Ortholog Identification
 
 
 ```bash=
@@ -130,7 +135,7 @@ nohup proteinortho6.pl {Ht,Pb,Pc,Pf,Pk,Pv,Py,Tg}.faa
  158
 ```
 
-## busco
+## BUSCOs
 
 ```bash=
 #9_busco
@@ -145,7 +150,7 @@ cp 7_make_fasta/*.faa 9_buscls/
 for file in *.faa; do busco -i $file -o ${file%.faa} -m prot -l apicomplexa -f; done
 
 ```
-
+# Versions
 
 ## questions 7
 
