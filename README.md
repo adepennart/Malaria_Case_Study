@@ -1,7 +1,10 @@
 # Malaria Case Study
+Here we will be determining how Haemoproteus_tartakovskyi is related to other malaria parasites. 
+
 ## Initialization
-make sure conda installed
-conda=
+To go through this pipeline, make sure you have conda=4.11.0 installed. Installation instructions can be found online.
+
+Before commencing, login to the server and make a main directory for the project.
 ```bash=1
 #login to server
 ssh inf-49-2021@130.235.8.214
@@ -12,7 +15,10 @@ mkdir Malaria
 cd Malaria
 ```
 ## First Gene Prediction
-GeneMark-ES/ET/EP ver 4.62_lic
+To compare Haemoproteus_tartakovskyi to the other plasmids, via differences in genes. A gene prediction with GeneMark-ES/ET/EP ver 4.62_lic needs to be completed.
+
+Genemark cannot be installed via conda and should be already installed on the server.
+
 ```bash
 #make directory
 mkdir 1_gene_predict/
@@ -25,6 +31,8 @@ gzip -d plasmodiumGenomes.tgz
 tar -xvf plasmodiumGenomes.tar
 
 #geneMarker
+#Genemark will not function without the license key.
+ls ~/.gm_key
 #i chose to gene predict Plasmodium_yoelii
 nohup gmes_petap.pl --ES --sequence Plasmodium_yoelii.genome & 
 #change name
@@ -34,7 +42,7 @@ mv genemark.gtf Plasmodium_yoelii.gtf
 cp plasmodium_yoelii.gtf /tmp/Prediction/
 ```
 ## Genome Filtration
-
+Haemoproteus_tartakovskyi is a parasite and the genome file is heavily contaminated with the hosts DNA, therefore a filtration in in order. The genome will be filtered
 ```bash
 #Make directory
 cd ..
