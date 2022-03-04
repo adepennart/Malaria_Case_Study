@@ -68,6 +68,10 @@ I do not think its too bad, however we do have to keep in mind that only one oth
 204 BUSCOS are found in all seven organisms. If Taxoplasma is our outgroup, it makes sense that more BUSCO genes were found within the ingroup.
 
 ## 11. Does all protein trees reflect the “true’’ species tree?
+![This is an image](https://github.com/adepennart/Malaria_Case_study/blob/main/gc_30.jpg)
 
+As seen by the tree above it is the same as 'true' species tree.
 
 ## 12. What is the phylogenetic position of Plasmodium falciparum?
+
+Plasmodium falciparum is the most distantly related species of plasmodium, and a branch off of Haemoproteus.
