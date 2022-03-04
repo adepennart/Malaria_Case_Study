@@ -5,8 +5,9 @@ I think it is a reasonable hypothesis that parasites with similar hosts would be
 ## 2. Why?
 Theoretically bird scaffolds should have higher GC content, but here small ones will remain because there is a higher chance for random GC content if you sequence is smaller, the longer it is the harder it would be.
 
-## 3. Insert the missing data in the above table. Use bash, not internet!
-(CHECK)
+## 3. Insert the missing data in the table below. Use bash, not internet!
+
+
 |  Species | Host | Genome size | Genes | Genomic GC |
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
 |1 Plasmodium berghei 	|	rodents	|	20493455 |	4050	| .28541442281221172004 |
@@ -17,6 +18,42 @@ Theoretically bird scaffolds should have higher GC content, but here small ones 
 |6 Plasmodium yoelii |		rodents		|27007701 |	5682	| .46163055324301189190 |
 |7 Haemoproteus tartakovskyi |	birds	|	22222369 |	(edited) 3910	| .23770659760824166960 |
 |8 Toxoplasma gondii 	|	humans	|	128105889	| 15892	| .58519328143783770325 |
+
+```bash=
+#for loop through each file, genome size
+for file in *.genome; do name=$(echo ${file%.genome});count=$(cat $file | grep -v \>| tr -d '\n'  | wc -m); echo $name $count; done
+Haemoproteus_tartakovskyi 20493455
+Plasmodium_berghei 17954629
+Plasmodium_cynomolgi 26181343
+Plasmodium_faciparum 23270305
+Plasmodium_knowlesi 23462346
+Plasmodium_vivax 27007701
+Plasmodium_yoelii 22222369
+Toxoplasma_gondii 128105889
+
+#for loop through each file, gene
+for file in *.fna; do name=$(echo ${file%.fna});count=$(cat $file | grep \>| wc -l); echo $name $count; done
+Ht 4050
+Pb 7282
+Pc 5787
+Pf 5207
+Pk 4953
+Pv 5682
+Py 4919
+Tg 15892
+
+#for loop through gc content
+for file in *.fna; do name=$(echo ${file%.fna});count=$( echo $(cat $file | grep -v \> |tr -cd  "CGcg" |wc -m)/$(cat $file | grep -v \> |tr -d '\n' |  wc -m) |bc -l); echo $name $count; done
+Ht .28541442281221172004
+Pb .25074910760397063387
+Pc .42160775686953995001
+Pf .23901099876307077281
+Pk .40271397184768355577
+Pv .46163055324301189190
+Py .23770659760824166960
+Tg .58519328143783770325
+
+```
 
 
 ## 4. Compare the genome sizes with other eukaryotes and bacteria. Discuss with your partner (that is student partner) the reason for the observed genome sizes.
