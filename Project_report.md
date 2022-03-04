@@ -33,26 +33,30 @@ In bash it creates a list.
 
 ## 7. Compare how many BUSCOs (orthologues proteins) that arefound in each proteome. Do the investigated parasites have close to complete numbers of BUSCOs?
 (CHECK)
-```
-#Ht 326
-#Pb 372
-#Pc 429
-#Pf 436
-#Pk 323
-#Pv 437
-#Py 434
-#Tg 384
+```bash=
+#for loop for each species
+for file in *.faa; do count=$(cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv | grep -v '#'| grep -v "Missing"| grep -v "Fragmented" | cut -f 1 | sort -u | wc -l); echo ${file%.faa} $count ;done
+# Ht 326
+# Pb 372
+# Pc 429
+# Pf 436
+# Pk 323
+# Pv 437
+# Py 434
+# Tg 384
 ```
 We have the fewest busco genes in Pk(323) and the most in Pv(437). The complete number of busco genes is 446. I do not know the threshold for whether something is close to complete but 437/446 is pretty good and is 326/446 is not bad.
 ```
-#Ht .73094170403587443946
-#Pb .83408071748878923766
-#Pc .96188340807174887892
-#Pf .97757847533632286995
-#Pk .72421524663677130044
-#Pv .97982062780269058295
-#Py .97309417040358744394
-#Tg .86098654708520179372
+#now to see what percent are complete/ duplicate
+for file in *.faa; do count=$(echo $(cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv |grep -v "#" | grep -v "Missing"| grep -v "Fragmented" | cut -f 1 | sort -u | wc -l)/ $(cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv | grep -v '#' |  cut -f 1 | sort -u | wc -l)|bc -l); echo ${file%.faa} $count ;done
+# Ht .73094170403587443946
+# Pb .83408071748878923766
+# Pc .96188340807174887892
+# Pf .97757847533632286995
+# Pk .72421524663677130044
+# Pv .97982062780269058295
+# Py .97309417040358744394
+# Tg .86098654708520179372
 ```
 Here we see that percentage wise, the fewest busco genes were found in Pk(0.72) and the most Pv(0.98). Again, unsure of threshhold, but does not seem bad.
 
@@ -62,16 +66,38 @@ Here we see that percentage wise, the fewest busco genes were found in Pk(0.72) 
 I do not think its too bad, however we do have to keep in mind that only one other species had fewer BUSCO genes found. 
 
 ## 9. How many of the BUSCOs are found in all eight organisms?
-185 BUSCOs are found in all eight organism
+(CHECK)
+```bash=
+#make one concatonated file
+for file in *.faa; do cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv | grep -v "#" | grep -v "Missing"| grep -v "Fragmented" | cut -f 1 | sort -u  >>concat_full_table.tsv ;done
+
+#find BUSCO genes found in all 8
+cat concat_full_table.tsv | sort | uniq -c| cut -d " " -f 7 | grep 8 | wc -l
+# 185
+#now for 7 species
+#one contatonated file
+ls *.faa | grep -v Tg.faa | while read file; do cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv | grep -v "#" | grep -v "Missing"| grep -v "Fragmented" | cut -f 1 | sort -u  >>7org_full_table.tsv ;done
+```
+185 BUSCOs are found in all eight organisms.
 
 ## 10. If Toxoplasma is removed, how many BUSCOs are shared among the remaining seven species. Interpret!
+```bash=
+#now for 7 species
+#one contatonated file
+ls *.faa | grep -v Tg.faa | while read file; do cat ${file%.faa}/run_apicomplexa_odb10/full_table.tsv | grep -v "#" | grep -v "Missing"| grep -v "Fragmented" | cut -f 1 | sort -u  >>7org_full_table.tsv ;done
+
+#find BUSCO found in all 7
+cat 7org_full_table.tsv | sort | uniq -c| cut -d " " -f 7 | grep 7 | wc -l
+204
+
+```
 204 BUSCOS are found in all seven organisms. If Taxoplasma is our outgroup, it makes sense that more BUSCO genes were found within the ingroup.
 
 ## 11. Does all protein trees reflect the “true’’ species tree?
 ![This is an image](https://github.com/adepennart/Malaria_Case_study/blob/main/gc_30.jpg)
 
-As seen by the tree above it is the same as 'true' species tree.
+As seen by the tree above, it is the same as 'true' species tree.
 
 ## 12. What is the phylogenetic position of Plasmodium falciparum?
 
-Plasmodium falciparum is the most distantly related species of plasmodium, and a branch off of Haemoproteus.
+Plasmodium falciparum is the most distantly related species of plasmodium, and the closest related plasmodium to Haemoproteus.
