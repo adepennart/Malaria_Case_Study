@@ -200,6 +200,55 @@ cat 7org_full_table.tsv | sort | uniq -c| cut -d " " -f 7 | grep 7 | wc -l
 ```
 
 
+## run buscoparser
+
+```bash=
+#for getting all the busco orthologs for each species
+#making a file with all the BUSCOs found in all 8
+cat concat_full_table.tsv | sort | uniq -c| grep " 8 " | cut -d " " -f 8 > busco_list.txt
+
+#run buscoparser.py
+python buscoparser.py busco_list.txt
+```
+
+
+## alignment
+
+```bash=
+#10_alignment
+cd ..
+mkdir 10_alignment
+cd 10_alignment
+cp ../9_busco/Python_output/ .
+#conda install
+conda install -c bioconda clustalo raxml
+#make alignment directory
+mkdir Alignment
+#output alignment to Aligment directory
+ls Python_output/* | while read file; do id=$(echo $file | sed s/Python_output// | tr -d '/' ); clustalo -i $file -o Alignment/$id -v ;done
+#make tree directory
+mkdir raxmlHPC_output
+#now for for loop
+ ls Alignment/* | while read file; do id=$(echo $file | sed s/Alignment// | tr -d '/' ); raxmlHPC -s $file -w /home/inf-49-2021/Malaria/10_alignment/raxmlHPC_output/ -n $id.tre -o Tg -m PROTGAMMABLOSUM62 -p 12345 ;done
+
+```
+
+## tree
+
+```bash=
+#11_tree
+cd ..
+mkdir 11_tree
+cd 11_tree
+conda install -c bioconda phylip
+#says it is already installed
+```
+
+
+
+
+
+
 
 
 
